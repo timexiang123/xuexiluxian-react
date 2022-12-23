@@ -1,7 +1,17 @@
-import React, { memo } from 'react'
+import React, { memo, useEffect } from 'react'
 import { useRoutes } from 'react-router-dom'
 import routes from 'router'
+import { HYRequestInstance } from 'service'
 const App = memo(() => {
+  useEffect(() => {
+    HYRequestInstance.get({ url: '/slider/getSliders' })
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
   return (
     <div className="app-container">
       <div className="app-header">header</div>

@@ -39,7 +39,11 @@ body {
 body {
   font-family: 'Microsoft YaHei', 'Arial';
   font-size: 14px;
-  color: #808080;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: left;
+  background-color: #fff;
 }
 ul,
 li {
@@ -61,3 +65,9 @@ img {
   text-overflow: ellipsis;
   overflow: hidden;
 }
+.container-xl {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+

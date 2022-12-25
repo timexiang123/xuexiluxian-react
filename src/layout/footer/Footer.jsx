@@ -1,8 +1,15 @@
 import React, { memo } from 'react'
-import {FooterWrapper} from './style'
+import Swiper from '@/components/swiper/swiper'
+import { FooterWrapper } from './style'
 const Footer = memo((props) => {
   const isShow = props.isShow
-  return isShow && <FooterWrapper>Footer</FooterWrapper>
+  return (
+    isShow && (
+      <FooterWrapper>
+        <Swiper></Swiper>
+      </FooterWrapper>
+    )
+  )
 })
 
 export default Footer

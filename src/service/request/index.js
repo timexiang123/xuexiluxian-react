@@ -28,7 +28,7 @@ class HYRequest {
         const msg = response.data.meta?.msg
         if (code === '200') {
           // 对响应数据做点什么
-          return response.data
+          return response.data.data
         } else {
           utils.errorNotifiy(msg)
         }

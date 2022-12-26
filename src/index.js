@@ -8,9 +8,10 @@ import { Provider } from 'react-redux'
 import { ThemeProvider } from 'styled-components'
 import { theme } from '@/assets/theme'
 import store from '@/store'
+import Fallback from './components/fallback/Fallback'
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
-  <Suspense fallback="Loading...">
+  <Suspense fallback={<Fallback></Fallback>}>
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <HashRouter>

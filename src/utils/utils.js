@@ -1,4 +1,5 @@
 import { notification } from 'antd'
+import dayjs from 'dayjs'
 export function errorNotifiy(description, placement = 'topRight') {
   notification.error({
     duration: 2,
@@ -14,4 +15,7 @@ export function successNotifiy(description, placement = 'topRight') {
     description,
     placement
   })
+}
+export function formateDateTime(time) {
+  return dayjs(time).format('YYYY-MM-DD hh:mm:ss')
 }

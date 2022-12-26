@@ -2,10 +2,12 @@ import React, { memo, useEffect } from 'react'
 import { connect } from 'react-redux'
 import {
   getHomeBannersAction,
-  getActiveBannerAction
+  getActiveBannerAction,
+  getFirstCategoriesAction
 } from '@/store/home/actionCreators'
 import Swiper from '@/components/swiper/swiper'
 import { NavWrapper } from './style'
+import { CaretRightOutlined } from '@ant-design/icons'
 import chuji from 'assets/images/chuji.png'
 import zhongji from 'assets/images/zhongji.png'
 import gaoji from 'assets/images/gaoji.png'
@@ -13,6 +15,7 @@ import xiangmu from 'assets/images/xiangmu.png'
 import suanfa from 'assets/images/suanfa.png'
 const NavBanner = memo((props) => {
   useEffect(() => {
+    props.getFirstCategories()
     props.getHomeBanners()
   }, [])
   const onSwiperChange = (current) => {
@@ -27,7 +30,18 @@ const NavBanner = memo((props) => {
         <div className="nav-banner">
           <div className="banner-top">
             <ul className="banner-left">
-              
+              {props.firstCategories?.map((item) => {
+                return (
+                  <li key={item.id}>
+                    <div className="first-category">
+                      <span className="label">{item.categoryName}</span>
+                      <span className="right-arrow">
+                        <CaretRightOutlined style={{ color: '#fff' }} />
+                      </span>
+                    </div>
+                  </li>
+                )
+              })}
             </ul>
             <div className="banner-right">
               <Swiper
@@ -92,11 +106,15 @@ const NavBanner = memo((props) => {
 })
 const mapStateToProps = (state) => {
   return {
-    banners: state.home.banners
+    banners: state.home.banners,
+    firstCategories: state.home.firstCategories
   }
 }
 const mapDispatchToProps = (dispatch) => {
   return {
+    getFirstCategories() {
+      dispatch(getFirstCategoriesAction())
+    },
     getHomeBanners() {
       dispatch(getHomeBannersAction())
     },

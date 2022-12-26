@@ -1,12 +1,5 @@
 import { Carousel ,Image} from 'antd'
 import PropTypes from 'prop-types'
-const contentStyle = {
-  height: '400px',
-  color: '#fff',
-  lineHeight: '400px',
-  textAlign: 'center',
-  background: '#364d79'
-}
 const App = (props) => (
   <Carousel effect="fade" autoplay afterChange={props.onSwiperChange}>
     {props?.list?.map((item) => {

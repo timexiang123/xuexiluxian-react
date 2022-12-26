@@ -15,6 +15,24 @@ export const NavWrapper = styled.div`
         width: 280px;
         height: 100%;
         background-color: #2b283d;
+        .first-category {
+          display: flex;
+          justify-content: space-between;
+          aligin-items: center;
+          padding: 0 10px;
+          height: 40px;
+          line-height: 40px;
+          overflow: hidden;
+          cursor: pointer;
+          &:hover {
+            background: linear-gradient(90deg, rgb(63, 229, 255), transparent);
+          }
+          .label {
+            font-size: 16px;
+            font-weight: 800;
+            color: #fff;
+          }
+        }
       }
       .banner-right {
         width: 860px;

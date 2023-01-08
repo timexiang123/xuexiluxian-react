@@ -1,9 +1,10 @@
-import React, { Fragment, memo, useState } from 'react'
-import { Radio } from 'antd'
+import React, { Fragment, memo } from 'react'
+import { Radio, Pagination } from 'antd'
 import Wrapper from './style'
+import CourseCard from '@/components/course-card/CourseCard'
+import CourseEmpty from '@/components/course-empty'
 import classNames from 'classnames'
 const index = memo((props) => {
-  const [courseType, setCourseType] = useState()
   // sortBy改变
   const changeSortBy = (sortBy) => {
     if (props.activeSortBy !== sortBy) {
@@ -12,9 +13,16 @@ const index = memo((props) => {
   }
   // 课程类型改变
   const onCourseTypeChange = (e) => {
-    console.log(courseType)
-    setCourseType(e.target.value)
-    console.log(courseType)
+    const value = e.target.value
+    props.changeCourseType && props.changeCourseType(value)
+  }
+  // 分页器发生改变
+  const onPaginationChange = (pageNum, pageSize) => {
+    props.changePageNum && props.changePageNum(pageNum)
+  }
+  // pageSize发生改变
+  const onPageSizeChange = (current, size) => {
+    props.changePageSize && props.changePageSize(size)
   }
   return (
     <Wrapper>
@@ -41,19 +49,43 @@ const index = memo((props) => {
             })}
           </ul>
           <div className="right">
-            <Radio.Group onChange={onCourseTypeChange} value={courseType}>
-              <Radio value={{ isFree: 1 }} defaultChecked={false}>
-                免费课程
-              </Radio>
-              <Radio value={{ isMember: 1 }} defaultChecked={false}>
-                会员课程
-              </Radio>
+            <Radio.Group onChange={onCourseTypeChange} value={props.courseType}>
+              <Radio value={'free'}>免费课程</Radio>
+              <Radio value={'member'}>会员课程</Radio>
             </Radio.Group>
           </div>
         </div>
       </div>
-      <div className="container-xl xl-main">123</div>
-      <div className="container-xl">123</div>
+      <div className="container-xl xl-main">
+        <div className="course-content">
+          {props.courseList?.length ? (
+            <ul className="content-ul">
+              {props.courseList?.map((item) => {
+                return <CourseCard item={item} key={item.id}></CourseCard>
+              })}
+            </ul>
+          ) : (
+            <CourseEmpty></CourseEmpty>
+          )}
+        </div>
+      </div>
+      {props.courseList?.length && (
+        <div className="container-xl">
+          <div className="xl-pager">
+            <Pagination
+              total={props.total}
+              current={props.pageNum}
+              pageSize={props.pageSize}
+              pageSizeOptions={['8', '12', '16', '24']}
+              showSizeChanger
+              showQuickJumper
+              showTotal={(total) => `Total ${total} 门课程`}
+              onChange={onPaginationChange}
+              onShowSizeChange={onPageSizeChange}
+            />
+          </div>
+        </div>
+      )}
     </Wrapper>
   )
 })

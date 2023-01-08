@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types'
-import React, { memo, useEffect } from 'react'
+import React, { memo } from 'react'
 import CourseCard from './style'
 import vipIcon from '@/assets/images/vipLogo.png'
 const App = memo((props) => {
-  useEffect(() => {
-    console.log(props.item)
-  }, [])
+  const isVip = props.item.isMember == 1 && props.item.discountPrice > 0
   return (
     <CourseCard className="content-li">
       <div className="li-top">
@@ -16,7 +14,7 @@ const App = memo((props) => {
             title={props.item?.courseName}
           />
         </div>
-        {props.item.isMember == 1 && props.item.discountPrice && (
+        {isVip && (
           <div className="vip-icon">
             <img src={vipIcon} alt="" />
           </div>
@@ -34,11 +32,18 @@ const App = memo((props) => {
           </span>
         </div>
         <div className="li-sale-price">
-          {props.item.isMember == 1 && props.item.discountPrice && (
+          {props.item.isMember == 1 && props.item.discountPrice > 0 && (
             <div className="memberfree">会员免费</div>
           )}
           <div className="memberprice">
-            ￥{props.item?.discountPrice?.toFixed(2)}
+            {props.item?.discountPrice == 0 && props.item.isMember == 0 && (
+              <span className="free-learn">免费学习</span>
+            )}
+            {props.item?.discountPrice > 0 && (
+              <span className="not-free-learn">
+                ￥{props.item?.discountPrice?.toFixed(2)}
+              </span>
+            )}
           </div>
         </div>
       </div>

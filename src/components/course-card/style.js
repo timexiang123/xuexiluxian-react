@@ -5,7 +5,7 @@ const CourseCard = styled.li`
   width: 270px;
   height: 275px;
   /* background: palevioletred; */
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   box-shadow: 1px 1px 10px rgb(27 39 94 / 40%);
   border-radius: 8px;
   transition: margin-top 0.2s;
@@ -60,9 +60,14 @@ const CourseCard = styled.li`
         border-radius: 24px 0 24px 0;
       }
       .memberprice {
-        color: #fe7062;
-        font-weight: bold;
-        font-size: 16px;
+        .free-learn {
+          color: ${(props) => props.theme.color.primaryColor};
+        }
+        .not-free-learn {
+          color: #fe7062;
+          font-weight: bold;
+          font-size: 16px;
+        }
       }
     }
   }

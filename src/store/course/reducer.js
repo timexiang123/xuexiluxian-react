@@ -1,7 +1,8 @@
 import * as actionTypes from './constances'
 const initState = {
   firstCategories: [],
-  secondCategories: []
+  secondCategories: [],
+  courses: {}
 }
 export default function (state = initState, action) {
   switch (action.type) {
@@ -9,6 +10,8 @@ export default function (state = initState, action) {
       return { ...state, firstCategories: action.firstCategories }
     case actionTypes.GET_SECOND_CATEGORIES:
       return { ...state, secondCategories: action.secondCategories }
+    case actionTypes.QUERY_COURSES:
+      return { ...state, courses: action.courses }
     default:
       return { ...state }
   }

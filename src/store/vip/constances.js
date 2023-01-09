@@ -1,0 +1,1 @@
+export const GET_VIP_LIST = 'get_vip_list'

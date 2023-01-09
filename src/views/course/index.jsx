@@ -251,8 +251,8 @@ const Course = memo((props) => {
   }
   // 修改pageSize
   const changePageSize = (pageSize) => {
-    setPageNum(1)
     setPageSize(pageSize)
+    setPageNum(1)
   }
   return (
     <div className="course-center">

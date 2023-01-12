@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from '@/App'
 import 'antd/dist/reset.css'
 import './assets/css/index.less'
-import { HashRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { ThemeProvider } from 'styled-components'
 import { theme } from '@/assets/theme'
@@ -14,9 +14,9 @@ root.render(
   <Suspense fallback={<Fallback></Fallback>}>
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <HashRouter>
+        <BrowserRouter>
           <App></App>
-        </HashRouter>
+        </BrowserRouter>
       </Provider>
     </ThemeProvider>
   </Suspense>

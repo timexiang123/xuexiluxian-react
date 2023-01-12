@@ -3,6 +3,10 @@
 *每个页面都必须引入
 *2021-12-23
 */
+* {
+  user-select: none;
+  box-sizing: border-box;
+}
 /** 清除内外边距 **/
 body,
 h1,
@@ -60,6 +64,12 @@ a:hover {
 img {
   vertical-align: middle;
 }
+input,
+button,
+textarea {
+  outline: none;
+  border: none;
+}
 .nowrap {
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -70,4 +80,3 @@ img {
   margin-left: auto;
   margin-right: auto;
 }
-

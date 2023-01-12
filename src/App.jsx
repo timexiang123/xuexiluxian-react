@@ -1,6 +1,17 @@
-import React, { memo } from 'react'
+import React, { memo, useState, useEffect } from 'react'
 import Layout from '@/layout/Layout'
+import { useLocation } from 'react-router-dom'
 const App = memo(() => {
-  return <Layout></Layout>
+  let [isShow, setIsShow] = useState(true)
+  const location = useLocation()
+  useEffect(() => {
+    console.log(location.pathname)
+    if (location.pathname === '/u/toLogin') {
+      setIsShow(false)
+    } else {
+      setIsShow(true)
+    }
+  })
+  return <Layout isShow={isShow}></Layout>
 })
 export default App

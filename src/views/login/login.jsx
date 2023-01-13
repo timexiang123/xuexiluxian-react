@@ -1,12 +1,14 @@
-import React, { memo, useState, useEffect } from 'react'
+import React, { memo, useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Loading from '@/components/loading'
 import {
   loginByPwdAction,
+  loginByCaptchaAction,
   getUserInfoAction
 } from '@/store/user/actionCreators'
-import { errorNotifiy } from '@/utils/utils'
+import { errorNotifiy, successNotifiy } from '@/utils/utils'
+import { sendCaptcha } from '@/service/modules/user'
 import { Encrypt } from '@/utils/serect'
 import Wrapper from './login-style'
 import loginbg from '@/assets/images/loginbg.jpg'
@@ -21,20 +23,36 @@ import phoneIcon from '@/assets/images/phone.png'
 import ybbgIcon from '@/assets/images/login-ybbg.jpg'
 import classNames from 'classnames'
 const Login = memo((props) => {
-  const [loginType, setLoginType] = useState('pwdLogin')
+  const [loginType, setLoginType] = useState('captchaLogin')
   const [username, setUserName] = useState('')
   const [password, setPassword] = useState('')
+  const [mobile, setMobile] = useState('')
+  const [captcha, setCaptcha] = useState('')
+  const [canSendCaptcha, setCanSendCaptcha] = useState(true)
+  const [restTime, setRestTime] = useState(10)
   const [loginLoading, setLoginLoading] = useState(false)
+  const restTimeRef = useRef()
+  let timer = null
+  // 当token改变时触发
   useEffect(() => {
     if (props.token) {
       props.getUserInfo && props.getUserInfo(props.token)
       setLoginLoading(false)
     }
   }, [props.token])
+  // 当restTime发生改变时触发
+  useEffect(() => {
+    restTimeRef.current = restTime
+  }, [restTime])
   // 切换登录类型
   const switchLoginType = (type) => {
     if (type === loginType) return
     setLoginType(type)
+  }
+  // 验证手机号规则
+  const mobileReg = () => {
+    const reg = /^1[35789]\d{9}$/
+    return reg.test(mobile)
   }
   // username输入框内容发生改变时触发
   const usernameInputChange = (e) => {
@@ -55,7 +73,66 @@ const Login = memo((props) => {
     }
     // 2.向后端发送登录请求
     setLoginLoading(true)
-    props.loginByPwd && props.loginByPwd(Encrypt(username), Encrypt(password))
+    props.loginByPwd &&
+      props.loginByPwd(Encrypt(username), Encrypt(password), () => {
+        setLoginLoading(false)
+      })
+  }
+  // 监听手机号发生改变
+  const onMobileChange = (e) => {
+    if (e.target.value.length <= 11) {
+      setMobile(e.target.value)
+    }
+  }
+  // 监听验证码发生改变
+  const onCaptchaChange = (e) => {
+    if (e.target.value.length <= 6) {
+      setCaptcha(e.target.value)
+    }
+  }
+  // 点击发送验证码按钮
+  const sendCaptchaClick = () => {
+    // 1.先校验手机号是否合法
+    if (!mobileReg()) {
+      return errorNotifiy('请填写11位合法手机号')
+    }
+    // 2.开始倒计时
+    setCanSendCaptcha(false)
+    timer = setInterval(() => {
+      setRestTime((val) => val - 1)
+      if (restTimeRef.current <= 1) {
+        setRestTime(10)
+        clearInterval(timer)
+        timer = null
+        setCanSendCaptcha(true)
+      }
+    }, 1000)
+    // 3.向后端发送验证码
+    sendCaptcha(mobile)
+      .then((res) => {
+        res && successNotifiy('短信发送成功，请留意手机')
+      })
+      .catch((err) => {
+        errorNotifiy('发送短信验证码失败')
+        console.log('发送短信验证码失败', err)
+      })
+  }
+  // 点击短信验证码登录
+  const captchaLoginBtnClick = () => {
+    // 1.先校验手机号是否合法
+    if (!mobileReg()) {
+      return errorNotifiy('请填写11位合法手机号')
+    }
+    // 2.判断验证码是否填写
+    if (captcha === '') {
+      return errorNotifiy('请填写验证码')
+    }
+    // 3.向后端发起登录请求
+    setLoginLoading(true)
+    props.loginByCaptcha &&
+      props.loginByCaptcha(Encrypt(mobile), captcha, () => {
+        setLoginLoading(false)
+      })
   }
   return (
     <Wrapper loginbg={loginbg} rightBg={ybbgIcon}>
@@ -214,15 +291,40 @@ const Login = memo((props) => {
                         <input
                           type="number"
                           placeholder="请输入11位合法手机号"
-                          maxLength={11}
+                          max={11}
+                          value={mobile}
+                          onChange={onMobileChange}
                         />
                       </div>
                       <div className="login-Verification">
-                        <input type="text" placeholder="请输入验证码" />
-                        <button className="btn btn-primary">发送验证码</button>
+                        <input
+                          type="number"
+                          placeholder="请输入验证码"
+                          value={captcha}
+                          onChange={onCaptchaChange}
+                          max={6}
+                        />
+                        {canSendCaptcha ? (
+                          <button
+                            className="btn btn-primary"
+                            onClick={sendCaptchaClick}
+                          >
+                            发送验证码
+                          </button>
+                        ) : (
+                          <button className="btn  disabled">
+                            <span className="rest-time"> {restTime}</span>
+                            秒后可重发
+                          </button>
+                        )}
                       </div>
                       <div className="login-submit">
-                        <button className="btn btn-primary">立即登录</button>
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => captchaLoginBtnClick()}
+                        >
+                          立即登录
+                        </button>
                       </div>
                       <div className="login-text">
                         登录即同意
@@ -255,7 +357,6 @@ const Login = memo((props) => {
     </Wrapper>
   )
 })
-
 const mapStateToProps = (state) => {
   return {
     token: state.user.token,
@@ -265,8 +366,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    loginByPwd(username, password) {
-      dispatch(loginByPwdAction(username, password))
+    loginByPwd(username, password, cb) {
+      dispatch(loginByPwdAction(username, password, cb))
+    },
+    loginByCaptcha(mobile, captcha, cb) {
+      dispatch(loginByCaptchaAction(mobile, captcha, cb))
     },
     getUserInfo(token) {
       dispatch(getUserInfoAction(token))

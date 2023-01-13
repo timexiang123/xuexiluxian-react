@@ -263,6 +263,15 @@ export default styled.div`
                     background-color: #007bff;
                     border-color: #007bff;
                   }
+                  .btn.disabled {
+                    color: #fff;
+                    padding: 5px 15px;
+                    font-size: 14px;
+                    border-radius: 20px;
+                    background-color: #ccc;
+                    border-color: #ccc;
+                    cursor: not-allowed;
+                  }
                   button:not(:disabled),
                   [type='button']:not(:disabled),
                   [type='reset']:not(:disabled),
@@ -271,6 +280,11 @@ export default styled.div`
                   }
                   .btn:not(:disabled):not(.disabled) {
                     cursor: pointer;
+                  }
+                  .rest-time {
+                    font-weight: 700;
+                    padding: 0 4px;
+                    color: #f00;
                   }
                 }
               }

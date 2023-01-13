@@ -1,6 +1,8 @@
 import * as requestConfig from './config'
 import axios from 'axios'
 import * as utils from 'utils/utils'
+import storage from '@/utils/storage'
+import { Navigate } from 'react-router-dom'
 class HYRequest {
   constructor() {
     // 创建实例
@@ -13,6 +15,15 @@ class HYRequest {
       function (config) {
         // 在发送请求之前做些什么
         config.headers.Source = requestConfig.SOURCE
+        // 判断需不需要携带token
+        if (config.headers.requiredToken) {
+          if (!storage.getStorage('token')) {
+            utils.errorNotifiy('请先登录')
+            return <Navigate to="/u/toLogin"></Navigate>
+          } else {
+            config.headers['Authorization'] = storage.getStorage('token')
+          }
+        }
         return config
       },
       function (error) {
@@ -24,9 +35,9 @@ class HYRequest {
     // 添加响应拦截器
     this.instance.interceptors.response.use(
       function (response) {
-        const code = response.data.meta?.code
+        const success = response.data.meta?.success
         const msg = response.data.meta?.msg
-        if (code === '200') {
+        if (success === true) {
           // 对响应数据做点什么
           return response.data.data
         } else {

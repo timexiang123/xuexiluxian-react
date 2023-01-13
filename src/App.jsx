@@ -5,7 +5,6 @@ const App = memo(() => {
   let [isShow, setIsShow] = useState(true)
   const location = useLocation()
   useEffect(() => {
-    console.log(location.pathname)
     if (location.pathname === '/u/toLogin') {
       setIsShow(false)
     } else {

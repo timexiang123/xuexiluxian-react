@@ -1,5 +1,13 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import Loading from '@/components/loading'
+import {
+  loginByPwdAction,
+  getUserInfoAction
+} from '@/store/user/actionCreators'
+import { errorNotifiy } from '@/utils/utils'
+import { Encrypt } from '@/utils/serect'
 import Wrapper from './login-style'
 import loginbg from '@/assets/images/loginbg.jpg'
 import logo from '@/assets/images/logo02.png'
@@ -12,15 +20,46 @@ import lockIcon from '@/assets/images/lock.png'
 import phoneIcon from '@/assets/images/phone.png'
 import ybbgIcon from '@/assets/images/login-ybbg.jpg'
 import classNames from 'classnames'
-const Login = memo(() => {
+const Login = memo((props) => {
   const [loginType, setLoginType] = useState('pwdLogin')
+  const [username, setUserName] = useState('')
+  const [password, setPassword] = useState('')
+  const [loginLoading, setLoginLoading] = useState(false)
+  useEffect(() => {
+    if (props.token) {
+      props.getUserInfo && props.getUserInfo(props.token)
+      setLoginLoading(false)
+    }
+  }, [props.token])
   // 切换登录类型
   const switchLoginType = (type) => {
     if (type === loginType) return
     setLoginType(type)
   }
+  // username输入框内容发生改变时触发
+  const usernameInputChange = (e) => {
+    setUserName(e.target.value)
+  }
+  // password输入框内容发生改变
+  const passwordChange = (e) => {
+    setPassword(e.target.value)
+  }
+  // 点击账号密码登录按钮
+  const pwdLoginBtnClick = async () => {
+    // 1.判断用户名和密码是不是填写
+    if (username === '') {
+      return errorNotifiy('用户名不能为空')
+    }
+    if (password === '') {
+      return errorNotifiy('密码不能为空')
+    }
+    // 2.向后端发送登录请求
+    setLoginLoading(true)
+    props.loginByPwd && props.loginByPwd(Encrypt(username), Encrypt(password))
+  }
   return (
     <Wrapper loginbg={loginbg} rightBg={ybbgIcon}>
+      {loginLoading && <Loading title="登录"></Loading>}
       <section>
         <div className="login-box">
           {/* 登录框左侧 */}
@@ -114,14 +153,29 @@ const Login = memo(() => {
                     <div className="pwd-login">
                       <div className="login-user">
                         <img src={accountIcon} alt="用户名" />
-                        <input type="password" placeholder="请输入用户名" />
+                        <input
+                          type="text"
+                          placeholder="请输入用户名"
+                          value={username}
+                          onChange={usernameInputChange}
+                        />
                       </div>
                       <div className="login-password">
                         <img src={lockIcon} alt="密码" />
-                        <input type="password" placeholder="请输入密码" />
+                        <input
+                          type="password"
+                          placeholder="请输入密码"
+                          value={password}
+                          onChange={passwordChange}
+                        />
                       </div>
                       <div className="login-submit">
-                        <button className="btn btn-primary">立即登录</button>
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => pwdLoginBtnClick()}
+                        >
+                          立即登录
+                        </button>
                       </div>
                       <div className="login-text">
                         登录即同意
@@ -202,4 +256,21 @@ const Login = memo(() => {
   )
 })
 
-export default Login
+const mapStateToProps = (state) => {
+  return {
+    token: state.user.token,
+    userInfo: state.user.userInfo
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loginByPwd(username, password) {
+      dispatch(loginByPwdAction(username, password))
+    },
+    getUserInfo(token) {
+      dispatch(getUserInfoAction(token))
+    }
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

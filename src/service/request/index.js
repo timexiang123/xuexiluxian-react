@@ -1,8 +1,8 @@
 import * as requestConfig from './config'
 import axios from 'axios'
 import * as utils from 'utils/utils'
+import { history } from '@/utils/history'
 import storage from '@/utils/storage'
-import { Navigate } from 'react-router-dom'
 class HYRequest {
   constructor() {
     // 创建实例
@@ -19,7 +19,7 @@ class HYRequest {
         if (config.headers.requiredToken) {
           if (!storage.getStorage('token')) {
             utils.errorNotifiy('请先登录')
-            return <Navigate to="/u/toLogin"></Navigate>
+            return history.replace('/u/toLogin')
           } else {
             config.headers['Authorization'] = storage.getStorage('token')
           }

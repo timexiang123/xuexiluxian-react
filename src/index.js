@@ -8,10 +8,10 @@ import { ThemeProvider } from 'styled-components'
 import { theme } from '@/assets/theme'
 import store from '@/store'
 import { HistoryRouter, history } from './utils/history'
-import Fallback from './components/fallback/Fallback'
+import Loading from './components/loading'
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
-  <Suspense fallback={<Fallback></Fallback>}>
+  <Suspense fallback={<Loading></Loading>}>
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <HistoryRouter history={history}>

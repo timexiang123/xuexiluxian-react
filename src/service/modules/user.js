@@ -25,6 +25,12 @@ export function loginByCaptcha(mobile, captcha) {
     data: { mobile, captcha }
   })
 }
+// 退出登录
+export function logout() {
+  return HYRequestInstance.get({
+    url: '/u/logout'
+  })
+}
 // 获取用户信息
 export function getUserInfo(token) {
   return HYRequestInstance.get({

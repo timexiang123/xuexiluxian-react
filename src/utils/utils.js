@@ -1,4 +1,4 @@
-import { notification } from 'antd'
+import { notification, Modal } from 'antd'
 import dayjs from 'dayjs'
 export function errorNotifiy(description, placement = 'topRight') {
   notification.error({
@@ -14,6 +14,16 @@ export function successNotifiy(description, placement = 'topRight') {
     message: '成功消息提示',
     description,
     placement
+  })
+}
+export function confirmDialog(title, content, okCb, cancelCb) {
+  Modal.confirm({
+    centered: true,
+    closable: true,
+    title,
+    content,
+    onCancel: cancelCb,
+    onOk: okCb
   })
 }
 export function formateDateTime(time) {

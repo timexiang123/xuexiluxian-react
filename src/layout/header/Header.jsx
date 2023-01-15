@@ -1,8 +1,18 @@
-import React, { memo } from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import React, { memo, useState, useEffect } from 'react'
+import { NavLink } from 'react-router-dom'
 import { HeaderWrapper } from './style'
+import storage from '@/utils/storage'
 import LogoPng from '../../assets/images/logo.png'
+import UnLogin from './cpns/un-login'
+import HasLogin from './cpns/has-login'
 const Header = memo(() => {
+  const [userInfo, setUserInfo] = useState({})
+  useEffect(() => {
+    const userInfo = JSON.parse(storage.getStorage('userInfo')) || {}
+    if (userInfo.id) {
+      setUserInfo(userInfo)
+    }
+  }, [])
   return (
     <HeaderWrapper>
       <div className="container-xl header-row">
@@ -37,15 +47,8 @@ const Header = memo(() => {
               </div>
             </div>
           </div>
-          <div className="header-login">
-            <Link to="/u/toLogin" className="head-login-a" title="登录">
-              登录
-            </Link>
-            &nbsp;/&nbsp;
-            <Link to="/u/toLogin" className="head-login-a" title="注册">
-              注册
-            </Link>
-          </div>
+          {/* 已登录/未登录 */}
+          {userInfo.id ? <HasLogin user={userInfo}></HasLogin> : <UnLogin></UnLogin>}
         </div>
       </div>
     </HeaderWrapper>

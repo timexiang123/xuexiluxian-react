@@ -6,6 +6,8 @@ const Vip = React.lazy(() => import('views/vip'))
 const Login = React.lazy(() => import('views/login/login'))
 const UserService = React.lazy(() => import('views/agreement/UserService'))
 const PrivacyPolicy = React.lazy(() => import('views/agreement/PrivacyPolicy'))
+const CourseDetail = React.lazy(() => import('views/course-detail'))
+const CoursePlay = React.lazy(() => import('views/course-play'))
 const NotFound = React.lazy(() => import('views/404/NotFound'))
 const routes = [
   {
@@ -35,6 +37,14 @@ const routes = [
   {
     path: '/agreement/privacy-policy',
     element: <PrivacyPolicy></PrivacyPolicy>
+  },
+  {
+    path: '/course/detail/:courseId',
+    element: <CourseDetail></CourseDetail>
+  },
+  {
+    path: '/player/play',
+    element: <CoursePlay></CoursePlay>
   },
   {
     path: '*',

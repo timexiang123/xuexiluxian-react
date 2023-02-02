@@ -1,5 +1,7 @@
 import { notification, Modal } from 'antd'
 import dayjs from 'dayjs'
+var duration = require('dayjs/plugin/duration')
+dayjs.extend(duration)
 export function errorNotifiy(description, placement = 'topRight') {
   notification.error({
     duration: 2,
@@ -28,4 +30,7 @@ export function confirmDialog(title, content, okCb, cancelCb) {
 }
 export function formateDateTime(time) {
   return dayjs(time).format('YYYY-MM-DD hh:mm:ss')
+}
+export function covertTimeToDays(time) {
+  return Math.floor(dayjs.duration(time).asDays())
 }

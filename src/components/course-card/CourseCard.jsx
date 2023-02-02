@@ -2,10 +2,21 @@ import PropTypes from 'prop-types'
 import React, { memo } from 'react'
 import CourseCard from './style'
 import vipIcon from '@/assets/images/vipLogo.png'
+import { useNavigate } from 'react-router-dom'
 const App = memo((props) => {
   const isVip = props.item.isMember == 1 && props.item.discountPrice > 0
+  const navigate = useNavigate()
+  // 跳转到课程详情页
+  const toCourseDetail = (id) => {
+    if (id) {
+      navigate('/course/detail/' + id)
+    }
+  }
   return (
-    <CourseCard className="content-li">
+    <CourseCard
+      className="content-li"
+      onClick={() => toCourseDetail(props?.item?.id)}
+    >
       <div className="li-top">
         <div className="li-img">
           <img

@@ -35,13 +35,22 @@ class HYRequest {
     // 添加响应拦截器
     this.instance.interceptors.response.use(
       function (response) {
+        if (response.config.responseType === 'blob') {
+          return response.data
+        }
         const success = response.data.meta?.success
         const msg = response.data.meta?.msg
+        const code = response.data.meta?.code
         if (success === true) {
           // 对响应数据做点什么
           return response.data.data
         } else {
           utils.errorNotifiy(msg)
+          if (code === '50002') {
+            setTimeout(() => {
+              history.replace('/u/toLogin')
+            }, 1000)
+          }
         }
       },
       function (error) {

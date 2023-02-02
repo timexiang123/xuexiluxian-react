@@ -2,11 +2,16 @@ import React, { memo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Avatar } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
-import { confirmDialog, errorNotifiy, successNotifiy } from '@/utils/utils'
+import {
+  confirmDialog,
+  errorNotifiy,
+  successNotifiy,
+  covertTimeToDays
+} from '@/utils/utils'
 import storage from '@/utils/storage'
 import { logout } from '@/service/modules/user'
 import Wrapper from './style'
-import infoMemberIcon from '@/assets/images/info-member.png'
+import defaultAvatarIcon from '@/assets/images/avatar.png'
 const HasLogin = memo((props) => {
   const { user } = props
   const [showBox, setShowBox] = useState(false)
@@ -65,39 +70,60 @@ const HasLogin = memo((props) => {
           <div className="card-info">
             <div className="info-left-avatar">
               <img
-                src="https://oss.xuexiluxian.cn/xiaoluxian-vcr/a6cc6d1f809d4cecbcbe0e6be486efb0.jpeg"
+                src={user.avatar || defaultAvatarIcon}
                 className="avatar-login"
                 title="用户头像"
                 alt="用户头像"
               />
             </div>
             <div className="info-right-info">
-              <div className="info-username">过期的爱情</div>
+              <div className="info-username">
+                {user.nickName || user.realName || user.username || '不留名'}
+              </div>
               <div className="info-member">
-                <img src={infoMemberIcon} alt="会员信息" />
-                <span className="info-member-gr">12个月会员</span>
-                <span className="info-member-re">337天到期</span>
+                {user.vipInfo?.vipIcon && (
+                  <img src={user.vipInfo.vipIcon} alt="会员信息" />
+                )}
+                {user.vipInfo?.vipName && (
+                  <span className="info-member-gr">{user.vipInfo.vipName}</span>
+                )}
+                {user.vipInfo?.startTime && (
+                  <span className="info-member-re">
+                    {covertTimeToDays(
+                      user.vipInfo.endTime - Date.now()
+                    )}
+                    天到期
+                  </span>
+                )}
               </div>
             </div>
           </div>
           <div className="card-type">
-            <Link className="type-item" to="/course/myCourses" title="我的课程">
+            <Link
+              className="type-item"
+              to="/profile/myCourses"
+              title="我的课程"
+            >
               <i className="iconfont icon-kecheng1"></i>
               <span>我的课程</span>
             </Link>
-            <Link className="type-item" to="/course/myOrders" title="订单中心">
+            <Link className="type-item" to="/profile/myOrders" title="订单中心">
               <i className="iconfont icon-dingdan"></i>
               <span>订单中心</span>
             </Link>
             <Link
               className="type-item"
-              to="/course/myMessages"
+              to="/profile/myMessages"
               title="我的消息"
             >
               <i className="iconfont icon-xiaoxi"></i>
               <span>我的消息</span>
             </Link>
-            <Link className="type-item" to="/course/myCourses" title="我的收藏">
+            <Link
+              className="type-item"
+              to="/profile/myCourses"
+              title="我的收藏"
+            >
               <i className="iconfont icon-shezhi"></i>
               <span>我的收藏</span>
             </Link>

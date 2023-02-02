@@ -2,7 +2,8 @@ import * as actionTypes from './constances'
 import {
   getFirstCategories,
   getSecondCategories,
-  queryCourses
+  queryCourses,
+  getCourseDetail
 } from '@/service/modules/course'
 // 请求一级分类数据
 export const getFirstCategoriesAction = () => {
@@ -55,6 +56,23 @@ export const queryCoursesAction = (data) => {
           dispatch({
             type: actionTypes.QUERY_COURSES,
             courses: res.pageInfo
+          })
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+}
+// 获取课程详情
+export const getCourseDetailAction = (courseId) => {
+  return (dispatch) => {
+    getCourseDetail(courseId)
+      .then((res) => {
+        if (res?.data?.id) {
+          dispatch({
+            type: actionTypes.GET_COURSE_DETAIL,
+            detail: res.data
           })
         }
       })
